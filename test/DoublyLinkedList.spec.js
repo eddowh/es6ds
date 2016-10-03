@@ -7,30 +7,81 @@ suite('Doubly Linked List', () => {
   // "setup" function
   let ll = new LinkedList();
   for (let i = 0; i < 10; i++) {
-    ll.pushback(i+1);
+    ll.push(i+1);
   }
 
-  suite('pushback', () => {
-    suitetest('nominal', () => {
-
-    });
-  });
-
-  suite('pushback', () => {
-    suitetest('nominal', () => {
-
-    });
-  });
-
+  /**
+   * shift() and push() is tested by testing insert
+   */
   suite('insert', () => {
     suitetest('nominal', () => {
+      let list = new LinkedList();
+      list.insert(0, "a");
+      assert.equal(list.size, 1);
+      assert.equal(list.get(0), "a");
+      list.insert(0, "b");
+      assert.equal(list.size, 2);
+      assert.equal(list.get(0), "b");
+      assert.equal(list.get(1), "a");
+      assert.equal(list.get(list.size-1), "a");
+      list.insert(1, "c");
+      assert.equal(list.get(1), "c");
+      list.insert(list.size, "d");
+      assert.equal(list.size, 4);
+      assert.equal(list.get(list.size-1), "d");
+    });
 
+    suitetest('boundary', () => {
+      let list = new LinkedList();
+      assert.throws(
+        () => { list.insert(-1, "XXX"); },
+        Error
+      );
+      assert.throws(
+        () => { list.insert(list.size+1, "XXX"); },
+        Error
+      );
+      assert.throws(
+        () => { list.insert(9999, "XXX"); },
+        Error
+      );
     });
   });
 
+  /**
+   * unshift() and pop() is tested by testing remove()
+   */
   suite('remove', () => {
     suitetest('nominal', () => {
+      let list = ll.clone();
+      list.remove(2);
+      assert.equal(list.size, 9);
+      // make sure the list does not contain 3 (which was just removed)
+      test.bool(ll.contains(3)).isTrue();
+      list.remove(0);
+      assert.equal(list.size, 8);
+      test.bool(ll.contains(1)).isTrue();
+      assert.equal(list.get(0), 2);
+      list.remove(list.size-1);
+      assert.equal(list.size, 7);
+      test.bool(ll.contains(10)).isTrue();
+      assert.equal(list.get(list.size-1), 9);
+    });
 
+    suitetest('boundary', () => {
+      let list = ll.clone();
+      assert.throws(
+        () => { list.remove(-1); },
+        Error
+      );
+      assert.throws(
+        () => { list.remove(list.size); },
+        Error
+      );
+      assert.throws(
+        () => { list.remove(999); },
+        Error
+      );
     });
   });
 
@@ -39,14 +90,14 @@ suite('Doubly Linked List', () => {
       let list = new LinkedList();
       let func = (i) => { return (i+1) * 10 };
       for (let i = 0; i < 10; i++) {
-        list.pushback(func(i));
+        list.push(func(i));
       }
       for (let i = 0; i < 10; i++) {
         assert.equal(list.get(i), func(i));
       };
     });
 
-    suitetest('out of bounds', () => {
+    suitetest('boundary', () => {
       assert.throws(
         () => { ll.get(-1); },
         Error
@@ -63,7 +114,7 @@ suite('Doubly Linked List', () => {
       let list = new LinkedList();
       let func = (i) => { return (i+1) * 10 };
       for (let i = 0; i < 10; i++) {
-        list.pushback(i);
+        list.push(i);
         list.set(i, func(i));
       }
       for (let i = 0; i < 10; i++) {
@@ -85,7 +136,7 @@ suite('Doubly Linked List', () => {
       assert.equal(list.get(idx), newValue);
     });
 
-    suitetest('out of bounds', () => {
+    suitetest('boundary', () => {
       assert.throws(
         () => { ll.get(-1); },
         Error
@@ -118,7 +169,7 @@ suite('Doubly Linked List', () => {
 
     suitetest('lists of different length should not be equal', () => {
       let shortList = new LinkedList();
-      shortList.pushback(1234567890);
+      shortList.push(1234567890);
 
       assert.notEqual(ll, shortList);
       test.bool(ll.equals(shortList)).isFalse();

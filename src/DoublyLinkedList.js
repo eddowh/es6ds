@@ -1,7 +1,9 @@
 /**
  * Doubly Linked List implemented in ES6:
- *   - pushfront
- *   - pushback
+ *   - shift
+ *   - unshift
+ *   - push
+ *   - pop
  *   - insert
  *   - remove
  *   - get
@@ -61,7 +63,7 @@ export default class DoublyLinkedList {
     return this.size == 0;
   }
 
-  pushfront(value) {
+  shift(value) {
     const node = new Node(value=value);
     if (this.tail == null) {
       dllmap.get(this).head = dllmap.get(this).tail = node;
@@ -75,7 +77,11 @@ export default class DoublyLinkedList {
     dllmap.get(this).size++;
   }
 
-  pushback(value) {
+  unshift(value) {
+    return this.remove(0);
+  }
+
+  push(value) {
     const node = new Node(value=value);
     if (this.head == null) {
       dllmap.get(this).head = dllmap.get(this).tail = node;
@@ -89,15 +95,19 @@ export default class DoublyLinkedList {
     dllmap.get(this).size++;
   }
 
+  pop(value) {
+    return this.remove(this.size-1);
+  }
+
   insert(pos, value) {
     if (pos < 0 || pos > this.size) {
       throw new IndexError("Out of bounds.");
     }
     if (pos == 0) {
-      this.pushfront(value);
+      this.shift(value);
     }
     else if (pos == this.size) {
-      this.pushback(value);
+      this.push(value);
     }
     else {
       let node = this.getNodeAt(pos);
@@ -112,7 +122,7 @@ export default class DoublyLinkedList {
   }
 
   remove(pos) {
-    if (pos < 0 | pos > this.size) {
+    if (pos < 0 || pos >= this.size) {
       throw new IndexError("Out of bounds.");
     }
     let node = this.getNodeAt(pos);
@@ -179,7 +189,7 @@ export default class DoublyLinkedList {
     let newList = new DoublyLinkedList();
     let head = this.head;
     while (head) {
-      newList.pushback(head.value);
+      newList.push(head.value);
       head = head.next;
     }
     return newList;
